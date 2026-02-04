@@ -1,25 +1,57 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
 const car = require("@/assets/images/carlogo2.png");
 const DOWN_PAYMENT = [5, 10, 15, 20, 25, 30, 35];
 const MONTH_OPTION = [24, 36, 48, 60, 72, 84];
 
 export default function Input() {
-  const [carprice, setCarPrice] = useState("");
+  const [carPrice, setCarPrice] = useState("");
   const [carDownPayment, setCarDownPayment] = useState("");
   const [carMonth, setCarMonth] = useState("");
   const [carInterest, setCarInterest] = useState("");
   const [carInstallment, setCarInstallment] = useState("");
+
+  const handleClick = () => {
+    if (
+      carPrice === "" ||
+      carDownPayment === "" ||
+      carMonth === "" ||
+      carInterest === ""
+    ) {
+      Alert.alert("คำเตือน", "กรุณากรอกข้อมูลไม่ครบ");
+      return;
+    }
+    let downPayment = (Number(carPrice) * Number(carDownPayment)) / 100;
+    let carPayment = Number(carPrice) - downPayment;
+    let totalInterest =
+      ((carPayment * Number(carInterest)) / 100) * (Number(carMonth) / 12);
+    let installmentPay = (carPayment + totalInterest) / Number(carMonth);
+
+    router.push({
+      pathname: "/result",
+      params: {
+        downPayment: downPayment.toFixed(2),
+        carPayment: carPayment.toFixed(2),
+        totalInterest: totalInterest.toFixed(2),
+        installmentPay: installmentPay.toFixed(2),
+        carPrice: installmentPay.toFixed(2),
+      },
+    });
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "android" ? "padding" : "height"}
@@ -40,7 +72,7 @@ export default function Input() {
             placeholder="เช่น 800000"
             keyboardType="numeric"
             style={styles.inputValue}
-            onChangeText={setCarInterest}
+            onChangeText={setCarPrice}
           ></TextInput>
           <Text style={styles.inputTitle}>เลือกเงินดาวน์</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -95,7 +127,7 @@ export default function Input() {
             style={styles.inputValue}
             onChangeText={setCarInterest}
           />
-          <TouchableOpacity style={styles.btnCal}>
+          <TouchableOpacity onPress={handleClick} style={styles.btnCal}>
             <Text style={styles.labelCal}>คำนวนค่างวด</Text>
           </TouchableOpacity>
         </View>
