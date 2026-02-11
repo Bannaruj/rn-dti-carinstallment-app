@@ -1,4 +1,4 @@
-## Mobile Application by React Native Expo (TypeScript
+## Mobile Application by React Native Expo (TypeScript)
 
 <img width="300" src="https://github.com/user-attachments/assets/f67b94c8-e3fb-4bce-ade8-50099fe4b10f" />
 
